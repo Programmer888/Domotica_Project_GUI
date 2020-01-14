@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+{% block content %}
+<div class='row'>
+	<div class='col-md-3'><br></div>
+	<div class='col-md-6'>
+		<h1>You can control the network from this page</h1>
+		<br>
+	</div>
+	<div class='col-md-3'><br></div>
+</div>
+<div class='row'>
+	<div class='col-md-3'><br></div>
+	<div class='col-md-6'>
+	<table class="table">
+	  <thead class="thead-dark">
+		<tr>
+			<th scope="col">#</th>
+			<th scope="col"></th>
+			<th scope="col">Address</th>
+			<th scope="col"></th>
+			<th scope="col"></th>
+		</tr>
+	  </thead>
+	  <tbody>
+		{%for i in range(0, nodelen)%} 
+
+		<tr>
+			<th scope="row">{{i+1}}</th>
+			<td><!-- Default disabled -->
+			<div class="custom-control custom-switch">
+				{% if nodes[i][2] == 1 %}
+					<input type="checkbox" class="custom-control-input" id="customSwitch2" disabled checked>
+				{% else %}
+					<input type="checkbox" class="custom-control-input" id="customSwitch2" disabled>
+				{% endif %}
+				<label class="custom-control-label" for="customSwitch2"></label>
+			</div>
+			</td>
+			<td>{{nodes[i][0]}} => {{nodes[i][1]}}</td>
+			<td>
+				<a href='/control_device?device={{nodes[i][0]}}&endpoint={{nodes[i][1]}}&state=on'><button type="button" class="btn btn-success">on</button></a>
+				<a href='/control_device?device={{nodes[i][0]}}&endpoint={{nodes[i][1]}}&state=off'><button type="button" class="btn btn-danger">off</button></a>
+				<a href='/info?device={{nodes[i][0]}}&endpoint={{nodes[i][1]}}&state=off'><button type="button" class="btn btn-primary">View</button></a>
+				<a href='/kick?device={{nodes[i][0]}}'><button type="button" class="btn btn-dark">Kick</button></a>
+		  </td>
+		</tr>
+		{%endfor%}
+		<thead class="thead-dark">
+		<tr>
+			<th scope="col"></th>
+			<th scope="col"></th>
+			<th scope="col">Switches</th>
+			<th scope="col"></th>
+			<th scope="col"></th>
+		</tr>
+	  </thead>
+		
+		
+		{%for i in range(0, grouplen)%} 
+
+		<tr>
+			<th scope="row">{{i+1}}</th>
+			<td><!-- Default disabled -->
+			<div class="custom-control custom-switch">
+				{% if nodes[i][2] == 1 %}
+					<input type="checkbox" class="custom-control-input" id="customSwitch2" disabled checked>
+				{% else %}
+					<input type="checkbox" class="custom-control-input" id="customSwitch2" disabled>
+				{% endif %}
+				<label class="custom-control-label" for="customSwitch2"></label>
+			</div>
+			</td>
+			<td>{{groups[i][0]}} => {{groups[i][1]}}</td>
+			<td>
+				<!--<a href='/control_device?device={{groups[i][0]}}&endpoint={{groups[i][1]}}&state=on'><button type="button" class="btn btn-success">on</button></a>
+				<a href='/control_device?device={{groups[i][0]}}&endpoint={{groups[i][1]}}&state=off'><button type="button" class="btn btn-danger">off</button></a>
+				<a href='/info?device={{groups[i][0]}}&endpoint={{groups[i][1]}}&state=off'><button type="button" class="btn btn-primary">View</button></a>-->
+				<a href='/kick?device={{groups[i][0]}}'><button type="button" class="btn btn-dark">Kick</button></a>
+		  </td>
+		</tr>
+		{%endfor%}		
+	  </tbody>
+	</table>
+	</div>
+	<div class='col-md-3'>
+		<a href='/refresh'><button type="button" class="btn btn-primary">Refresh</button></a>
+		<a href='/start_commisioning'><button type="button" class="btn btn-success">Start Commisioning</button></a>
+	</div>
+</div>
+{% endblock %}

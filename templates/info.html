@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% block content %}
+
+<script type=text/javascript>
+        $(function() {
+          $('a#btnON').bind('click', function() {
+            $.getJSON('/control_device?device={{ device }}&endpoint={{ endpoint }}&state=on',
+                function(data) {
+              //do nothing
+            });
+            return false;
+          });
+        });
+		$(function() {
+          $('a#btnOFF').bind('click', function() {
+            $.getJSON('/control_device?device={{ device }}&endpoint={{ endpoint }}&state=off',
+                function(data) {
+              //do nothing
+            });
+            return false;
+          });
+        });
+</script>
+<div class='row'>
+	<div class='col-md-3'><br></div>
+	<div class='col-md-6'>
+		<br>
+	</div>
+	<div class='col-md-3'><br></div>
+</div>
+<div class='row'>
+	<div class='col-md-3'><br></div>
+	<div class='col-md-6'>
+	<table class="table table-bordered">
+	  <thead class="thead-dark">
+		<tr>
+		  <th scope="col" colspan='2'><br></th>
+		</tr>
+	  </thead>
+	  <tbody>
+		<tr>
+		  <th>Address</th>
+		  <td>{{ device }}</td>
+		</tr>
+		<tr>
+		  <th>Endpoint</th>
+		  <td>{{ endpoint }}</td>
+		</tr>
+		<tr>
+		  <th>State</th>
+		  <td>
+			<div class="custom-control custom-switch">
+				{% if state == 1 %}
+					<input type="checkbox" class="custom-control-input" id="customSwitch2" disabled checked>
+				{% else %}
+					<input type="checkbox" class="custom-control-input" id="customSwitch2" disabled>
+				{% endif %}
+				<label class="custom-control-label" for="customSwitch2"></label>
+			</div>
+		  </td>
+		</tr>
+		<tr>
+			<th>Control</th>
+			<td>
+				<a id='btnON' href='#'><button type="button" class="btn btn-success">on</button></a>
+				<a id='btnOFF' href='/control_device?device={{ device }}&state=off&redirect=info'><button type="button" class="btn btn-danger">off</button></a>
+			</td>
+		</tr>
+		<thead class="thead-dark">
+			<tr>
+			  <th scope="col" colspan='2'>Groups</th>
+			</tr>
+		</thead>
+		{%for i in range(0, len)%} 
+
+		<tr>
+			<td>{{groups[i][0]}}</td>
+			<td>
+				<a href='/group_control?device={{ device }}&endpoint={{ endpoint }}&group={{ groups[i][0] }}&action=add'><button type="button" class="btn btn-success">Add</button></a>
+				<a href='/group_control?device={{ device }}&endpoint={{ endpoint }}&group={{ groups[i][0] }}&action=remove'><button type="button" class="btn btn-danger">Remove</button></a>
+		  </td>
+		</tr>
+		{%endfor%} 
+	  </tbody>
+	</table>
+	</div>
+	<div class='col-md-3'>
+		
+	</div>
+</div>
+{% endblock %}
