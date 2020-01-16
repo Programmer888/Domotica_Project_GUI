@@ -8,7 +8,9 @@ import serial
 from zb_cli_wrapper.zb_cli_dev import ZbCliDevice
 from zb_cli_wrapper.src.utils.cmd_wrappers.zigbee import constants
 from utils.zigbee_classes.clusters.attribute import Attribute
-from forms import AddGroupForm, RemoveGroupForm
+#from forms import AddGroupForm, RemoveGroupForm
+
+comport='/dev/ttyACM0'
 
 app = Flask(__name__)
 @app.route('/')
@@ -18,7 +20,7 @@ def index():
     # cli_instance.bdb.start()
     #response = [(1234, 10)]
     try:
-        cli_instance = ZbCliDevice({'com_port': 'COM4'})
+        cli_instance = ZbCliDevice({'com_port': comport})
         #cli_instance.bdb.channel = [16] # channel must be dictionary
         #   cli_instance.bdb.role = 'zr' # set coordinator role
     except serial.serialutil.SerialException:
@@ -67,7 +69,7 @@ def control_device():
     state = request.args.get('state')
     
     try:
-        cli_instance = ZbCliDevice({'com_port': 'COM4'})
+        cli_instance = ZbCliDevice({'com_port': comport})
         #cli_instance.bdb.channel = [16] # channel must be dictionary
         #   cli_instance.bdb.role = 'zr' # set coordinator role
     except serial.serialutil.SerialException:
@@ -88,7 +90,7 @@ def control_device():
 @app.route('/info')
 def info():
     try:
-        cli_instance = ZbCliDevice({'com_port': 'COM4'})
+        cli_instance = ZbCliDevice({'com_port': comport})
         #cli_instance.bdb.channel = [16] # channel must be dictionary
         #   cli_instance.bdb.role = 'zr' # set coordinator role
     except serial.serialutil.SerialException:
@@ -137,7 +139,7 @@ def group_control():
     add = request.args.get('action')
     
     try:
-        cli_instance = ZbCliDevice({'com_port': 'COM4'})
+        cli_instance = ZbCliDevice({'com_port': comport})
         #cli_instance.bdb.channel = [16] # channel must be dictionary
         #   cli_instance.bdb.role = 'zr' # set coordinator role
     except serial.serialutil.SerialException:
@@ -159,7 +161,7 @@ def kick():
     dev = request.args.get('device')
     
     try:
-        cli_instance = ZbCliDevice({'com_port': 'COM4'})
+        cli_instance = ZbCliDevice({'com_port': comport})
         #cli_instance.bdb.channel = [16] # channel must be dictionary
         #   cli_instance.bdb.role = 'zr' # set coordinator role
     except serial.serialutil.SerialException:
@@ -199,7 +201,7 @@ def kick():
     for i in range(0, len(content)):
         parts = content[i].split('|')
         if (parts[0] != dev):
-            groups.append((parts[0], parts[1]))
+            devices.append((parts[0], parts[1]))
         
     BulbFile=open('nodes.txt','w')
     SwitchFile=open('switches.txt','w')
@@ -233,7 +235,7 @@ def refresh():
     # print(hexx)
 
     try:
-        cli_instance = ZbCliDevice({'com_port': 'COM4'})
+        cli_instance = ZbCliDevice({'com_port': comport})
         #cli_instance.bdb.channel = [16] # channel must be dictionary
         #   cli_instance.bdb.role = 'zr' # set coordinator role
     except serial.serialutil.SerialException:
@@ -274,7 +276,7 @@ def refresh():
 @app.route('/start_commisioning')   
 def start_commisioning():
     try:
-        cli_instance = ZbCliDevice({'com_port': 'COM4'})
+        cli_instance = ZbCliDevice({'com_port': comport})
         #cli_instance.bdb.channel = [16] # channel must be dictionary
         #   cli_instance.bdb.role = 'zr' # set coordinator role
     except serial.serialutil.SerialException:
@@ -286,3 +288,19 @@ def start_commisioning():
     cli_instance.bdb.start()
     
     return redirect(url_for('index')) 
+    
+@app.route('/start_network')   
+def start_network():
+    try:
+        cli_instance = ZbCliDevice({'com_port': comport})
+        cli_instance.bdb.channel = [20] # channel must be dictionary
+        cli_instance.bdb.role = 'zc' # set coordinator role
+    except serial.serialutil.SerialException:
+        print('Can not create CLI device')
+        cli_instance.close_cli()
+        return None
+        
+    # Start commissioning.
+    cli_instance.bdb.start()
+    
+    return redirect(url_for('index'))
